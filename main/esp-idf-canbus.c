@@ -7,6 +7,8 @@
 
 static const char* TAG_TWAI = "CAN";
 
+void task_TWAI_receive(void *pvParameters);
+
 void setup_twai_driver(void){
     twai_general_config_t g_config = {
         .mode = TWAI_MODE_NORMAL,
@@ -38,5 +40,24 @@ void setup_twai_driver(void){
 
 void app_main(void)
 {
+    //Let user know we are in app_main()
+    char *thisTaskName = pcTaskGetName(NULL);
+    ESP_LOGI(thisTaskName, "Hello, starting up!\n");
 
+    //Set up the TWAI driver
+    setup_twai_driver();
+
+    //Create tasks
+    xTaskCreate(task_TWAI_receive, "CAN Receive", 1024, NULL, 1, NULL);
+}
+
+void task_TWAI_receive(void *pvParameters){
+    long rx_frame_count = 0;
+    while(1){
+        twai_message_t rx_frame;
+        if(twai_receive(&rx_frame, 10) == ESP_OK){
+            rx_frame_count++;
+            ESP_LOGI(TAG_TWAI, "Number of rx frames received: %ld", rx_frame_count);
+        }
+    }
 }
