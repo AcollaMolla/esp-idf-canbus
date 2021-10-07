@@ -8,7 +8,17 @@
 static const char* TAG_TWAI = "CAN";
 
 void setup_twai_driver(void){
-    twai_general_config_t g_config = TWAI_GENERAL_CONFIG_DEFAULT(GPIO_NUM_21, GPIO_NUM_22, TWAI_MODE_NORMAL);
+    twai_general_config_t g_config = {
+        .mode = TWAI_MODE_NORMAL,
+        .tx_io = (gpio_num_t)4,
+        .rx_io = (gpio_num_t)5,
+        .clkout_io = (gpio_num_t)TWAI_IO_UNUSED,
+        .bus_off_io = (gpio_num_t)TWAI_IO_UNUSED,
+        .tx_queue_len = 10,
+        .rx_queue_len = 65,
+        .alerts_enabled = TWAI_ALERT_ALL,
+        .clkout_divider = 0
+    };    
     twai_timing_config_t t_config = TWAI_TIMING_CONFIG_125KBITS();
     twai_filter_config_t f_config = TWAI_FILTER_CONFIG_ACCEPT_ALL();
 
