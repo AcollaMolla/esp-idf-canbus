@@ -48,16 +48,28 @@ void app_main(void)
     setup_twai_driver();
 
     //Create tasks
+    //This task will likely cause an error later on because 1024 bytes is not enough memory for
+    //65 CAN-bus frames which are roughly 16 bytes in size each. If the queue is entirely filled up
+    //then this task will consume around 1040 bytes, thus causing a kernel panic
     xTaskCreate(task_TWAI_receive, "CAN Receive", 1024, NULL, 1, NULL);
 }
 
 void task_TWAI_receive(void *pvParameters){
-    long rx_frame_count = 0;
+
     while(1){
+
+        //Any CAN-bus frames read from the queue will be put here
         twai_message_t rx_frame;
+
+        //Check if the queue contains any new CAN-bus frames
         if(twai_receive(&rx_frame, 10) == ESP_OK){
-            rx_frame_count++;
-            ESP_LOGI(TAG_TWAI, "Number of rx frames received: %ld", rx_frame_count);
+            
+            //Print ID and DLC of frame
+            printf("%x, %x: ", rx_frame.identifier, rx_frame.data_length_code);
+            for(int i=0;i<rx_frame.data_length_code;i++){
+                printf("%x ", rx_frame.data[i]);
+            }
+            printf("\n");
         }
     }
 }
