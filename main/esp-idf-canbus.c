@@ -62,7 +62,7 @@ void task_TWAI_receive(void *pvParameters){
         twai_message_t rx_frame;
 
         //Check if the queue contains any new CAN-bus frames
-        if(twai_receive(&rx_frame, 10) == ESP_OK){
+        if(twai_receive(&rx_frame, pdMS_TO_TICKS(1000)) == ESP_OK){
             
             //Print ID and DLC of frame
             printf("%x, %x: ", rx_frame.identifier, rx_frame.data_length_code);
