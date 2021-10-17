@@ -12,8 +12,8 @@ void task_TWAI_receive(void *pvParameters);
 void setup_twai_driver(void){
     twai_general_config_t g_config = {
         .mode = TWAI_MODE_NORMAL,
-        .tx_io = (gpio_num_t)4,
-        .rx_io = (gpio_num_t)5,
+        .tx_io = (gpio_num_t)5,
+        .rx_io = (gpio_num_t)4,
         .clkout_io = (gpio_num_t)TWAI_IO_UNUSED,
         .bus_off_io = (gpio_num_t)TWAI_IO_UNUSED,
         .tx_queue_len = 10,
